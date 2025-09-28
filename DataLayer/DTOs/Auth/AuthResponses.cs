@@ -26,6 +26,16 @@ public class ForgotPasswordResponse
     public string Message { get; set; } = string.Empty;
 }
 
+public class VerifyResetCodeResponse
+{
+    public string Message { get; set; } = string.Empty;
+}
+
+public class ResetPasswordResponse
+{
+    public string Message { get; set; } = string.Empty;
+}
+
 public class ErrorResponse
 {
     public ErrorResponse()
