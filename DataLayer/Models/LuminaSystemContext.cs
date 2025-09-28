@@ -76,6 +76,8 @@ public partial class LuminaSystemContext : DbContext
 
     public virtual DbSet<VocabularyList> VocabularyLists { get; set; }
 
+    public virtual DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var builder = new ConfigurationBuilder();
@@ -649,6 +651,28 @@ public partial class LuminaSystemContext : DbContext
                 .HasForeignKey(d => d.MakeBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_VocabularyList_Users");
+        });
+
+        modelBuilder.Entity<PasswordResetToken>(entity =>
+        {
+            entity.HasKey(e => e.PasswordResetTokenId).HasName("PK_PasswordResetTokens");
+
+            entity.ToTable("PasswordResetTokens");
+
+            entity.Property(e => e.PasswordResetTokenId).HasColumnName("PasswordResetTokenID");
+            entity.Property(e => e.CodeHash)
+                .HasMaxLength(512)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedAt)
+                .HasPrecision(3)
+                .HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.ExpiresAt).HasPrecision(3);
+            entity.Property(e => e.UsedAt).HasPrecision(3);
+
+            entity.HasOne(d => d.User).WithMany(p => p.PasswordResetTokens)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PasswordResetTokens_Users");
         });
 
         OnModelCreatingPartial(modelBuilder);

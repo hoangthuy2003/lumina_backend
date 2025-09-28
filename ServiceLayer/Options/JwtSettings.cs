@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace lumina.Options;
+namespace ServiceLayer.Options;
 
 public class JwtSettings
 {

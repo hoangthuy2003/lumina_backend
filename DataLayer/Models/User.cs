@@ -68,4 +68,6 @@ public partial class User
     public virtual ICollection<UserSpacedRepetition> UserSpacedRepetitions { get; set; } = new List<UserSpacedRepetition>();
 
     public virtual ICollection<VocabularyList> VocabularyLists { get; set; } = new List<VocabularyList>();
+
+    public virtual ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
 }
