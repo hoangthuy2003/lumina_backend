@@ -91,7 +91,9 @@ public partial class LuminaSystemContext : DbContext
             entity.HasKey(e => e.AccountId).HasName("PK__Accounts__349DA5A66E07EEBE");
 
             entity.HasIndex(e => e.Username, "UQ__Accounts__536C85E4C923B0BE").IsUnique();
-
+            entity.HasIndex(e => new { e.AuthProvider, e.ProviderUserId }, "UQ_Accounts_AuthProvider_ProviderUserId")
+                .IsUnique()
+                .HasFilter("([AuthProvider] IS NOT NULL AND [ProviderUserId] IS NOT NULL)");
             entity.Property(e => e.CreateAt)
                 .HasPrecision(3)
                 .HasDefaultValueSql("(sysutcdatetime())")
@@ -102,6 +104,23 @@ public partial class LuminaSystemContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.PasswordHash)
+               .HasMaxLength(512)
+               .IsUnicode(false);
+            entity.Property(e => e.AuthProvider)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ProviderUserId)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.AccessToken)
+                .HasMaxLength(1024)
+                .IsUnicode(false);
+            entity.Property(e => e.RefreshToken)
+                .HasMaxLength(1024)
+                .IsUnicode(false);
+            entity.Property(e => e.TokenExpiresAt)
+                .HasPrecision(3);
 
             entity.HasOne(d => d.User).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.UserId)

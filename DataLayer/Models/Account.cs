@@ -11,7 +11,17 @@ public partial class Account
 
     public string Username { get; set; } = null!;
 
-    public string PasswordHash { get; set; } = null!;
+    public string? PasswordHash { get; set; }
+
+    public string? AuthProvider { get; set; }
+
+    public string? ProviderUserId { get; set; }
+
+    public string? AccessToken { get; set; }
+
+    public string? RefreshToken { get; set; }
+
+    public DateTime? TokenExpiresAt { get; set; }
 
     public DateTime CreateAt { get; set; }
 

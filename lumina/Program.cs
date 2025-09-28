@@ -1,6 +1,8 @@
 
 using DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using ServiceLayer.Auth;
+using Services.Auth;
 using Services.Upload;
 
 namespace lumina
@@ -26,7 +28,7 @@ namespace lumina
             });
 
             builder.Services.AddScoped<IUploadService, UploadService>();
-
+            builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
