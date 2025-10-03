@@ -1,5 +1,7 @@
 ﻿using DataLayer.Models;
 using Microsoft.EntityFrameworkCore.Storage;
+using RepositoryLayer.Questions;
+using RepositoryLayer.Speaking;
 
 
 namespace RepositoryLayer.UnitOfWork;
@@ -12,7 +14,8 @@ public class UnitOfWork : IUnitOfWork
     public ICategoryRepository Categories { get; private set; }
     public IUserRepository Users { get; private set; }
     public IVocabularyRepository Vocabularies { get; private set; }
-
+    public IQuestionRepository Questions { get; private set; }
+    public ISpeakingResultRepository SpeakingResults { get; private set; }
     public UnitOfWork(LuminaSystemContext context)
     {
         _context = context;
@@ -20,6 +23,10 @@ public class UnitOfWork : IUnitOfWork
         Categories = new CategoryRepository(_context);
         Users = new UserRepository(_context);
         Vocabularies = new VocabularyRepository(_context);
+
+        Questions = new QuestionRepository(_context);
+        SpeakingResults = new SpeakingResultRepository(_context);
+
     }
 
     public async Task<int> CompleteAsync()

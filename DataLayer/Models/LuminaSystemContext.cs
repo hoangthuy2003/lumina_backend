@@ -489,6 +489,10 @@ public partial class LuminaSystemContext : DbContext
             entity.Property(e => e.FeedbackAi).HasColumnName("FeedbackAI");
             entity.Property(e => e.QuestionId).HasColumnName("QuestionID");
             entity.Property(e => e.SelectedOptionId).HasColumnName("SelectedOptionID");
+            entity.Property(e => e.AnswerContent).HasColumnType("text");
+            entity.Property(e => e.AudioUrl).HasColumnName("AudioURL");
+            entity.Property(e => e.Score).HasColumnName("Score");
+            entity.Property(e => e.IsCorrect).HasColumnName("IsCorrect");
 
             entity.HasOne(d => d.Attempt).WithMany(p => p.UserAnswers)
                 .HasForeignKey(d => d.AttemptId)

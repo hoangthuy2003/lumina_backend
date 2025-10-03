@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using System.IO;
-using Microsoft.Extensions.Configuration;
 using DataLayer.DTOs;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
-namespace Services.Upload
+namespace ServiceLayer.UploadFile
 {
     public class UploadService : IUploadService
     {
-        private readonly CloudinaryDotNet.Cloudinary _cloudinary;
+        private readonly Cloudinary _cloudinary;
 
         public UploadService(IConfiguration configuration)
         {
@@ -23,46 +20,47 @@ namespace Services.Upload
                 configuration["CloudinarySettings:ApiKey"],
                 configuration["CloudinarySettings:ApiSecret"]);
 
-            _cloudinary = new CloudinaryDotNet.Cloudinary(account);
+            _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<DataLayer.DTOs.UploadResultDTO> UploadFile(IFormFile file)
+        public async Task<UploadResultDTO> UploadFileAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
                 throw new ArgumentException("File không hợp lệ.");
             }
 
-            // Nếu là file âm thanh (MP3), ta sẽ dùng VideoUploadParams
-            if (file.ContentType.Contains("audio"))
+            UploadResult uploadResult;
+
+            if (file.ContentType.StartsWith("audio/"))
             {
-                var audioParams = new VideoUploadParams
+                var audioParams = new VideoUploadParams()
                 {
                     File = new FileDescription(file.FileName, file.OpenReadStream()),
-                    PublicId = $"music_app/audio/{Path.GetFileNameWithoutExtension(file.FileName)}_{Guid.NewGuid()}",
+                    PublicId = $"lumina/audio/{Path.GetFileNameWithoutExtension(file.FileName)}_{Guid.NewGuid()}",
                 };
-                var videoUploadResult = await _cloudinary.UploadAsync(audioParams);
-                if (videoUploadResult.Error != null)
-                {
-                    throw new Exception(videoUploadResult.Error.Message);
-                }
-                return new DataLayer.DTOs.UploadResultDTO { Url = videoUploadResult.SecureUrl.ToString(), PublicId = videoUploadResult.PublicId };
+
+                uploadResult = await _cloudinary.UploadAsync(audioParams);
             }
             else // Mặc định xử lý cho file ảnh
             {
                 var imageParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.FileName, file.OpenReadStream()),
-                    PublicId = $"music_app/images/{Path.GetFileNameWithoutExtension(file.FileName)}_{Guid.NewGuid()}",
+                    PublicId = $"lumina/images/{Path.GetFileNameWithoutExtension(file.FileName)}_{Guid.NewGuid()}",
                     Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face")
                 };
-                var imageUploadResult = await _cloudinary.UploadAsync(imageParams);
-                if (imageUploadResult.Error != null)
-                {
-                    throw new Exception(imageUploadResult.Error.Message);
-                }
-                return new DataLayer.DTOs.UploadResultDTO { Url = imageUploadResult.SecureUrl.ToString(), PublicId = imageUploadResult.PublicId };
+                // Với ảnh, phương thức UploadAsync mặc định đã hiểu là ResourceType.Image
+                uploadResult = await _cloudinary.UploadAsync(imageParams);
             }
+
+            if (uploadResult.Error != null)
+            {
+                throw new Exception(uploadResult.Error.Message);
+            }
+
+            // Cách trả về kết quả này là hoàn toàn chính xác
+            return new UploadResultDTO { Url = uploadResult.SecureUrl.ToString(), PublicId = uploadResult.PublicId };
         }
     }
 }

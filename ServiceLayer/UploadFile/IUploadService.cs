@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.DTOs;
-namespace Services.Upload
+namespace ServiceLayer.UploadFile
 {
     public interface IUploadService
     {
-        Task<DataLayer.DTOs.UploadResultDTO> UploadFile(IFormFile file);
+        Task<UploadResultDTO> UploadFileAsync(IFormFile file);
 
     }
 }

@@ -15,12 +15,12 @@ public partial class UserAnswer
 
     public string? AnswerContent { get; set; }
 
-    public int? Score { get; set; }
+    public float? Score { get; set; }
 
     public bool? IsCorrect { get; set; }
 
     public string? FeedbackAi { get; set; }
-
+    public string? AudioUrl { get; set; }
     public virtual ExamAttempt Attempt { get; set; } = null!;
 
     public virtual Question Question { get; set; } = null!;
